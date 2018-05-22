@@ -1,65 +1,25 @@
 // THIS IS YOUR JAVASCRIPT DOCUMENT!
-
+let makeAsteroids = require('./createAsteroids');
 // GENERATE ASTEROIDS IN HTML DOCUMENT
-
-for (var i = 0; i < 100; i++) {
-
-  var asteroid = new Image();
-  asteroid.id = "asteroid" + i.toString();
-  asteroid.src = "./img/asteroid.png";
-  asteroid.style.height = (((Math.random() * 6) + 0)*30);
-  asteroid.style.position = "absolute";
-  asteroid.style.top = (((Math.random() * 6) + 0)*100);
-  asteroid.style.right = -200;
-  var asteroidPosition = asteroid.style.right;
-  var asteroidID = asteroid.id;
-
-  document.body.appendChild(asteroid);
-
-}
-
+let controls = require('./controls');
 
 // MOVEMENT CONTROLS FOR SHIP
+makeAsteroids.createAsteroids();
 
 // declare & initialize movement variables
-var xPosition = 100;
-var yPosition = 100;
-var xSpeed = 1;
-var ySpeed = 0;
-var maxSpeed = 5;
+let xPosition = 100;
+let yPosition = 100;
+let xSpeed = 1;
+let ySpeed = 0;
+let maxSpeed = 5;
 
 // declare & initialize controller variables
-var upPressed = 0;
-var downPressed = 0;
-var leftPressed = 0;
-var rightPressed = 0;
+let upPressed = 0;
+let downPressed = 0;
+let leftPressed = 0;
+let rightPressed = 0;
 
 
-function keyDown(playerKeyPress)
-{
-  var keyPressed = playerKeyPress.which;
-  if (keyPressed == 38)
-    upPressed = 1;
-  if (keyPressed == 40)
-    downPressed = 1;
-  if (keyPressed == 37)
-    leftPressed = 1;
-  if (keyPressed == 39)
-    rightPressed = 1;
-}
-
-function keyUp(playerKeyPress)
-{
-  var keyPressed = playerKeyPress.which;
-  if (keyPressed == 38)
-    upPressed = 0;
-  if (keyPressed == 40)
-    downPressed = 0;
-  if (keyPressed == 37)
-    leftPressed = 0;
-  if (keyPressed == 39)
-    rightPressed = 0;
-}
 
 function slowDownX()
 {
@@ -77,29 +37,28 @@ function slowDownY()
     ySpeed = ySpeed + 1;
 }
 
-
-
-var shipHealth = 1000;
-var loopCounter = 0;
-var asteroidCounter = 0;
-
-
-
+let shipHealth = 1000;
+let loopCounter = 0;
+let asteroidCounter = 0;
 
 function gameLoop()
 {
 
   // SPACESHIP MOVEMENT
+  console.log("game started")
+// console.log("hello " + e.key + " " + e.keyCode);
+document.addEventListener("keydown", controls.keyDown, false);
+
+// console.log("hello there " + e.key + " " + e.keyCode);
+document.addEventListener("keyup", controls.keyUp, false);
 
   // new position
-  xPosition = xPosition + xSpeed;
-  yPosition = yPosition + ySpeed;
+  xPosition += xSpeed;
+  yPosition += ySpeed;
 
   // actually change on-screen position by adjusting CSS
-  var testL = document.getElementById('ship')
-  testL.style.left = xPosition;
-  var testR = document.getElementById('ship')
-  testR.style.top = yPosition;
+  document.getElementById('ship').style.left = xPosition;
+  document.getElementById('ship').style.top = yPosition;
 
   // change speed when user presses keys
   if (upPressed == 1)
@@ -118,7 +77,7 @@ function gameLoop()
      slowDownX();
 
      // check position of ship on screen
-     var shipBox = document.getElementById("ship").getBoundingClientRect();
+     var shipBox = document.getElementById('ship').getBoundingClientRect();
 
      // ASTEROID MOVEMENT
 
@@ -159,7 +118,7 @@ function gameLoop()
           document.getElementById("healthCounter").innerHTML = "SHIELDS: " + shipHealth;
         } else {
           document.getElementById("healthCounter").innerHTML = "GAME OVER";
-          document.getElementById("ship").remove();  // ship disappears
+          document.getElementById('ship').style.display = 'none';
         }
         var audio = new Audio('./sounds/explosion.wav');  // load explosion sound (creative commons license: https://www.freesound.org/people/Veiler/sounds/264031/)
         audio.play();  // play explosion sound
@@ -169,5 +128,11 @@ function gameLoop()
      }
 
   // loop
-  setTimeout("gameLoop()",10);
+  
+
+  setInterval(gameLoop, 10);
+
+
 }
+
+document.addEventListener("load", gameLoop);
